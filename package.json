@@ -1,0 +1,42 @@
+{
+  "name": "miningos-wrk-powermeter-abb",
+  "version": "0.0.1",
+  "description": "MiningOS Worker PowerMeter ABB",
+  "keywords": [
+    "tether"
+  ],
+  "author": "Tether",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tetherto/miningos-wrk-powermeter-abb.git"
+  },
+  "engine": {
+    "node": ">=20.0"
+  },
+  "scripts": {
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "test": "npm run lint && npm run test:unit && npm run test:integration",
+    "test:unit": "brittle tests/unit/*.js",
+    "test:integration": "NODE_ENV=test brittle ./tests/powermeter.test.js",
+    "test:coverage": "brittle --coverage tests/{,**/}*.test.js"
+  },
+  "dependencies": {
+    "@bitfinex/lib-js-util-promise": "git+https://github.com/bitfinexcom/lib-js-util-promise.git",
+    "async": "3.2.6",
+    "miningos-tpl-wrk-powermeter": "git+https://github.com/tetherto/miningos-tpl-wrk-powermeter.git",
+    "svc-facs-modbus": "git+https://github.com/tetherto/svc-facs-modbus.git"
+  },
+  "devDependencies": {
+    "brittle": "3.16.3",
+    "debug": "4.4.1",
+    "modbus-stream": "0.46.0",
+    "miningos-mock-control-service": "git+https://github.com/tetherto/miningos-mock-control-service.git",
+    "standard": "17.1.2",
+    "uuid": "9.0.1"
+  },
+  "overrides": {
+    "serialport": "npm:noop@1.0.0"
+  }
+}
