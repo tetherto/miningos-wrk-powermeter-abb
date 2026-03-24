@@ -110,10 +110,12 @@ class B2XPowerMeter extends ABBPowerMeter {
   }
 
   async getAlarmConfig (index) {
+    const indexBuf = Buffer.alloc(2)
+    indexBuf.writeUInt16BE(index, 0)
     const packets = await series([
       async () => {
-        this.client.write('hr35936', Buffer.from([index]))
-        return Buffer.from([index])
+        await this.client.write('hr35936', indexBuf)
+        return indexBuf
       },
       async () => this.client.read('hr35937-35939'),
       async () => this.client.read('hr35940-35947'),

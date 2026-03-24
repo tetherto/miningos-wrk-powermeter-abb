@@ -9,6 +9,7 @@ const {
   createWriteTrackingClient,
   createMultiWriteTrackingClient
 } = require('./helpers')
+const { buildAlarmConfig, parseAlarmConfig } = require('../../workers/lib/utils')
 
 test('B2XPowerMeter _readValues - calls client.read with correct parameters', async (t) => {
   const { mockClient, readCalls } = createReadTrackingClient((functionCode, address, length) => {
@@ -149,4 +150,39 @@ test('B2XPowerMeter setAlarmConfig', async (t) => {
   t.is(writeCalls[3].address, 'hr35948')
   t.is(writeCalls[4].address, 'hr35952')
   t.ok(result.success)
+})
+
+test('B2XPowerMeter getAlarmConfig - reads and parses alarm packets', async (t) => {
+  const alarmConfig = {
+    index: 7,
+    quantity: '1.2.3.4.5.6',
+    limit_on: 1000n,
+    limit_off: 500n,
+    delay_on: 30,
+    delay_off: 60,
+    action: {
+      types: ['writeLog'],
+      output: 2
+    }
+  }
+  const built = buildAlarmConfig(alarmConfig)
+  let readStep = 0
+  const readSeq = [built[1], built[2], built[3], built[4]]
+
+  const mockClient = {
+    end: () => {},
+    write: async () => {},
+    read: async () => readSeq[readStep++]
+  }
+
+  const powermeter = createPowermeter(B2XPowerMeter, { mockClient })
+  const result = await powermeter.getAlarmConfig(7)
+
+  const indexBuf = Buffer.alloc(2)
+  indexBuf.writeUInt16BE(7, 0)
+  const expected = parseAlarmConfig([indexBuf, built[1], built[2], built[3], built[4]])
+
+  t.ok(result.success)
+  t.alike(result.alarm_config, expected)
+  t.is(readStep, 4)
 })

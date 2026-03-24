@@ -156,3 +156,33 @@ test('alerts - voltage boundary conditions', (t) => {
   const justAboveHigh = { stats: { voltage_v: 36001 } }
   t.ok(mediumVoltageHigh.probe(ctx, justAboveHigh), 'should trigger high alert for 36001V')
 })
+
+test('alerts - medium_voltage_low valid when snap online and configured', (t) => {
+  const { valid } = alerts.specs.powermeter.medium_voltage_low
+  const ctx = { conf: { medium_voltage_low: { minVoltage: 32000 } } }
+  const snap = { stats: { status: 'online', voltage_v: 34000 }, config: {} }
+  t.ok(valid(ctx, snap))
+})
+
+test('alerts - medium_voltage_low valid false when offline or missing config', (t) => {
+  const { valid } = alerts.specs.powermeter.medium_voltage_low
+  const ctx = { conf: { medium_voltage_low: { minVoltage: 32000 } } }
+  t.absent(valid(ctx, { stats: { status: 'offline', voltage_v: 34000 }, config: {} }))
+  t.absent(valid({ conf: {} }, { stats: { status: 'online', voltage_v: 34000 }, config: {} }))
+  t.absent(valid(ctx, { stats: { status: 'online' } }))
+})
+
+test('alerts - medium_voltage_high valid when snap online and configured', (t) => {
+  const { valid } = alerts.specs.powermeter.medium_voltage_high
+  const ctx = { conf: { medium_voltage_high: { maxVoltage: 36000 } } }
+  const snap = { stats: { status: 'online', voltage_v: 34000 }, config: {} }
+  t.ok(valid(ctx, snap))
+})
+
+test('alerts - medium_voltage_high valid false when offline or missing config', (t) => {
+  const { valid } = alerts.specs.powermeter.medium_voltage_high
+  const ctx = { conf: { medium_voltage_high: { maxVoltage: 36000 } } }
+  t.absent(valid(ctx, { stats: { status: 'offline', voltage_v: 34000 }, config: {} }))
+  t.absent(valid({ conf: {} }, { stats: { status: 'online', voltage_v: 34000 }, config: {} }))
+  t.absent(valid(ctx, { stats: { status: 'online' } }))
+})
