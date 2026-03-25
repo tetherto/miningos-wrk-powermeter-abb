@@ -1,5 +1,7 @@
 'use strict'
 
+const { randomBytes } = require('crypto')
+
 function strToAsciiBuffer (s) {
   const charCodeArr = []
 
@@ -12,7 +14,7 @@ function strToAsciiBuffer (s) {
 }
 
 function randomFloat () {
-  return crypto.randomBytes(6).readUIntBE(0, 6) / 2 ** 48
+  return randomBytes(6).readUIntBE(0, 6) / 2 ** 48
 }
 
 function randomNumber (min = 0, max = 1) {

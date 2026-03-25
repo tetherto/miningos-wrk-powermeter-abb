@@ -6,6 +6,7 @@ const {
   buildActionConfig,
   parseActionConfig,
   buildAlarmConfig,
+  parseAlarmConfig,
   asciiBufferToStr,
   bufferToBitString,
   ACTION_TYPES
@@ -128,6 +129,32 @@ test('buildAlarmConfig - complete alarm configuration', (t) => {
   // Check action packet
   t.is(packets[4].readUInt8(0), ACTION_TYPES.writeLog | ACTION_TYPES.setOutput)
   t.is(packets[4].readUInt8(1), 2)
+})
+
+test('parseAlarmConfig - round-trip with buildAlarmConfig', (t) => {
+  const alarmConfig = {
+    index: 456,
+    quantity: '10.20.30.40.50.60',
+    limit_on: 111n,
+    limit_off: 222n,
+    delay_on: 5,
+    delay_off: 6,
+    action: {
+      types: ['setOutput', 'setAlarmBit'],
+      output: 4
+    }
+  }
+  const packets = buildAlarmConfig(alarmConfig)
+  const parsed = parseAlarmConfig(packets)
+
+  t.is(parsed.index, 456)
+  t.is(parsed.limit_on, 111n)
+  t.is(parsed.limit_off, 222n)
+  t.is(parsed.delay_on, 5)
+  t.is(parsed.delay_off, 6)
+  t.alike([...parsed.action.types].sort(), ['setAlarmBit', 'setOutput'].sort())
+  t.is(parsed.action.output, 4)
+  t.ok(typeof parsed.quantity === 'string')
 })
 
 test('asciiBufferToStr - normal ASCII characters', (t) => {
