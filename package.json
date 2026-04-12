@@ -1,6 +1,6 @@
 {
   "name": "@tetherto/miningos-wrk-powermeter-abb",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "MiningOS Worker PowerMeter ABB",
   "keywords": [
     "tether"
