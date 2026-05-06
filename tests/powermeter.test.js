@@ -1,8 +1,8 @@
 'use strict'
 
-const { getDefaultConf, testExecutor } = require('miningos-tpl-wrk-powermeter/tests/powermeter.test')
+const { getDefaultConf, testExecutor } = require('@tetherto/miningos-tpl-wrk-powermeter/tests/powermeter.test')
 const B2XPowerMeter = require('../workers/lib/models/b2x')
-const ModbusFacility = require('svc-facs-modbus')
+const ModbusFacility = require('@tetherto/svc-facs-modbus')
 
 let mock
 

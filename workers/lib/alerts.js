@@ -1,7 +1,7 @@
 'use strict'
 
-const libAlerts = require('miningos-tpl-wrk-thing/workers/lib/alerts')
-const libUtils = require('miningos-tpl-wrk-thing/workers/lib/utils')
+const libAlerts = require('@tetherto/miningos-tpl-wrk-powermeter/workers/lib/alerts')
+const libUtils = require('@tetherto/miningos-tpl-wrk-powermeter/workers/lib/utils')
 
 libAlerts.specs.powermeter = {
   ...libAlerts.specs.powermeter_default,
